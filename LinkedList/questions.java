@@ -197,6 +197,203 @@ public class questions {
         return mergeTwoLists(mergeKSortedList_03(arr, si, mid), mergeKSortedList_03(arr, mid + 1, ei));
     }
 
+    // Pepcoding portal :  Time: O(N),  Space:O(1)
+    public ListNode segregateEvenOdd(ListNode head) {
+        if(head==null || head.next==null) return head; 
+        
+        ListNode dummyEven = new ListNode(-1); 
+        ListNode dummyOdd = new ListNode(-1) ; 
+        
+        ListNode evenTail= dummyEven; 
+        
+        ListNode oddTail = dummyOdd;
+        
+        ListNode curr=head; 
+        
+        while(curr!=null){
+            if(curr.val%2 != 0){
+                oddTail.next = curr; 
+                oddTail = oddTail.next ; 
+            }else{
+                evenTail.next=curr; 
+                evenTail = evenTail.next ; 
+            }
+            
+            curr=curr.next ; 
+        }
+        
+        evenTail.next=dummyOdd.next ; 
+        oddTail.next=null; //imp to avoid TLE in circular movement 
+        
+        return dummyEven.next;
+    }
+
+    // reverse nodes of  a linked list in K groups
+    ListNode th=null;
+    ListNode tt=null;
+    public void addFirst(ListNode node){
+        if(th==null){
+            th=node;
+            tt=node; 
+        }else{
+            node.next = th; 
+            th=node; 
+        }
+    }
+    
+    public int length(ListNode node){
+        int len=0;
+        ListNode curr=node; 
+        while(curr!=null){
+            curr=curr.next; 
+            len++;
+        }
+        
+        return len; 
+    }
+
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if(head==null || head.next==null || k==0) return head; 
+        
+        int len = length(head) ; 
+        ListNode oh=null , ot=null ; 
+        ListNode curr=head; 
+        
+        while(len>=k){
+            int temp = k;
+            while(temp-- > 0){
+                ListNode forw=curr.next; 
+                curr.next=null; 
+                addFirst(curr); 
+                
+                curr=forw;
+            }
+            
+            if(oh==null){
+                oh=th; 
+                ot=tt; 
+            }else{
+               ot.next=th;
+               ot=tt;
+            }
+            
+            th=null;
+            tt=null;
+            len-=k; 
+        }
+        
+        ot.next = curr ;  
+        
+        return oh;
+    }
+
+    // reverse in range
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null || head.next == null || m == n) return head;
+
+        ListNode curr = head;
+        ListNode prev = null;
+
+        int idx = 1;
+
+        while (curr != null)
+        {
+            while (idx >= m && idx <= n)
+            {
+                ListNode forw = curr.next;
+                curr.next = null;
+                addFirst(curr);
+                curr = forw;
+                idx++;
+            }
+
+            if (idx > n)
+            {
+                if (prev != null)
+                {
+                    prev.next = th;
+                    tt.next = curr;
+                    return head;
+                }
+                else
+                {
+                    tt.next = curr;
+                    return th;
+                }
+            }
+
+            idx++;
+            prev = curr;
+            curr = curr.next;
+        }
+
+        return head;
+    }
+
+
+    public static ListNode segregate01(ListNode head) { 
+        if(head==null || head.next==null) return head; 
+        ListNode zero = new ListNode(-1); 
+        ListNode one = new ListNode(-1); 
+        ListNode pz=zero;
+        ListNode po=one;
+        ListNode curr=head; 
+        
+        while(curr!=null){
+            if(curr.val==0){
+                pz.next=curr; 
+                pz=pz.next;
+            }else{
+                po.next=curr;
+                po=po.next;
+            }
+            
+            curr=curr.next; 
+        }
+        
+        pz.next=one.next; 
+        po.next=null; 
+        
+        return zero.next;
+    }
+
+    public static ListNode segregate012(ListNode head) {
+        if(head==null || head.next==null) return head; 
+        
+        ListNode zero = new ListNode(-1); 
+        ListNode one = new ListNode(-1); 
+        ListNode two = new ListNode(-1); 
+        
+        ListNode pz=zero , po = one , pt = two ; 
+        
+        ListNode curr = head; 
+        
+        while(curr!=null){
+            if(curr.val ==0 ){
+                pz.next=curr;
+                pz=pz.next; 
+                
+            }else if(curr.val==1){
+                po.next=curr; 
+                po=po.next;
+                
+            }else{
+                pt.next=curr; 
+                pt=pt.next; 
+            }
+            
+            curr=curr.next; 
+        }
+        
+        po.next=two.next;  //ye line upar hi likhna, varna error aayega 
+        
+        pz.next=one.next; 
+        
+        pt.next=null;
+        
+        return zero.next;
+    }
+
     
     public static ListNode segregateOnLastIndex(ListNode head) {
         if (head == null || head.next == null)
@@ -220,6 +417,78 @@ public class questions {
         sp.next = large.next;
         return small.next;
     }
+
+    // segregate based on pivot index
+    public static ListNode segregate(ListNode head, int pivotIdx) {
+        if (head == null || head.next == null)
+                return head;
+    
+        ListNode pivotNode = head;
+        while(pivotIdx-- > 0) pivotNode = pivotNode.next;
+    
+        ListNode large = new ListNode(-1), small = new ListNode(-1), sp = small, lp = large, curr = head;
+        while (curr != null) {
+            if (curr!=pivotNode && curr.val <= pivotNode.val) { 
+                sp.next = curr;
+                sp = sp.next;
+            } else if(curr!=pivotNode){
+                lp.next = curr;
+                lp = lp.next;
+            }
+            curr = curr.next;
+        }
+    
+        sp.next = lp.next = pivotNode.next = null;
+        sp.next = pivotNode;
+        pivotNode.next = large.next;
+        return small.next;
+      }
+
+    // public static ListNode segregate(ListNode head, int pivotIdx) {
+    //     if(head==null || head.next==null) return head; 
+    //     int idx=0 , data=0;
+    //     ListNode curr=head; 
+    //     while(curr!=null){
+    //         if(idx==pivotIdx) {
+    //             data= curr.val;
+    //             break;
+    //         }
+            
+    //         curr=curr.next; 
+    //         idx++;
+    //     }
+        
+    //     ListNode smaller = new ListNode(-1);
+    //     ListNode larger = new ListNode(-1); 
+        
+    //     ListNode ps=smaller , pl=larger ; 
+        
+    //     ListNode pivot=null;
+    //      curr=head;
+        
+    //     idx=0;
+    //     while(curr!=null){
+    //         if(idx==pivotIdx){
+    //            pivot=curr;
+    //         }else if(curr.val<=data){
+    //             ps.next=curr;
+    //             ps=ps.next;
+    //         }else{
+    //             pl.next=curr;
+    //             pl=pl.next;
+    //         }
+            
+    //         curr=curr.next;
+    //         idx++;
+    //     }
+        
+    //     ps.next=pivot;
+    //     pivot.next=larger.next;
+    //     pl.next=null;
+        
+        
+    //   return smaller.next;
+    // }
 
     public static ListNode[] segregate(ListNode head, int pivotIdx) {
         ListNode pivotNode = head;
@@ -384,6 +653,63 @@ public class questions {
         return curr != null ? curr : new ListNode(0);
     }
 
+    public static ListNode multiplyDigitWithLL(ListNode list, int digit){
+        ListNode dummy = new ListNode(-1), prev = dummy, c = list;
+        int carry = 0;
+        while (c != null || carry != 0)
+        {
+            int prod = carry + (c != null ? c.val : 0) * digit;
+            carry = prod / 10;
+            int num = prod % 10;
+    
+            prev.next = new ListNode(num);
+            prev = prev.next;
+    
+            if (c != null)
+                c = c.next;
+        }
+    
+        return dummy.next;
+    }
+    
+    public static void addTwoLL(ListNode curr, ListNode prev){
+        int carry = 0;
+        while (curr != null || carry != 0)
+        {
+            int sum = carry + (curr != null ? curr.val : 0) + (prev.next != null ? prev.next.val : 0);
+            carry = sum / 10;
+    
+            if (prev.next == null)
+                prev.next = new ListNode(0);
+            prev = prev.next;
+            prev.val = sum % 10;
+    
+            if (curr != null)
+                curr = curr.next;
+        }
+    }
+
+    public static ListNode multiplyTwoLL(ListNode l1, ListNode l2) {
+        l1 = reverse(l1);
+        l2 = reverse(l2);
+    
+        ListNode dummy = new ListNode(-1), prev = dummy, l2_itr = l2;
+    
+        while (l2_itr != null)
+        {
+            ListNode smallAnsList = multiplyDigitWithLL(l1, l2_itr.val);
+            addTwoLL(smallAnsList, prev);
+    
+            prev = prev.next;
+            l2_itr = l2_itr.next;
+        }
+    
+        return reverse(dummy.next);
+    }
+
+    // copy LL with random pointers - HW
+
+    
     public static ListNode isCyclePresentInLL(ListNode head) {
         if (head == null && head.next == null)
             return null;
@@ -472,7 +798,8 @@ public class questions {
         return head;
     }
 
-    public static ListNode removeDuplicates(ListNode head) {
+    // remove all duplicates
+    public static ListNode removeAllDuplicates(ListNode head) {
         if (head == null || head.next == null)
             return head;
 

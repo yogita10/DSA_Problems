@@ -1,5 +1,5 @@
-#include<iostream>
-
+#include <iostream>
+#include <vector>
 using namespace std;
 
 class ListNode
@@ -99,4 +99,157 @@ ListNode *mergeTwoLists(ListNode *l1, ListNode *l2)
     dummy->next = nullptr;
     delete dummy;
     return head;
+}
+
+ListNode *segregateEvenOdd(ListNode *head)
+{
+    if (head == nullptr || head->next == nullptr)
+        return head;
+
+    ListNode *even = new ListNode(-1), *odd = new ListNode(-1);
+    ListNode *ep = even, *op = odd, *curr = head;
+
+    while (curr != nullptr)
+    {
+        if (curr->val % 2 != 0)
+        {
+            op->next = curr;
+            op = op->next;
+        }
+        else
+        {
+            ep->next = curr;
+            ep = ep->next;
+        }
+        curr = curr->next;
+    }
+
+    ep->next = nullptr, op->next = nullptr;
+    ep->next = odd->next;
+
+    return even->next;
+}
+
+int length(ListNode *head)
+{
+    int len = 0;
+    while (head != nullptr)
+    {
+        head = head->next;
+        len++;
+    }
+    return len;
+}
+
+ListNode *th = nullptr, *tt = nullptr;
+
+void addFirstNode(ListNode *node)
+{
+    if (th == nullptr)
+        th = tt = node;
+    else
+    {
+        node->next = th;
+        th = node;
+    }
+}
+
+ListNode *reverseInKGroup(ListNode *head, int k)
+{
+    if (head == nullptr || head->next == nullptr || k <= 1)
+        return head;
+
+    int len = length(head);
+    ListNode *curr = head, *oh = nullptr, *ot = nullptr;
+    while (curr != nullptr && len >= k)
+    {
+        int tempK = k;
+        while (tempK-- > 0)
+        {
+            ListNode *forw = curr->next;
+            curr->next = nullptr;
+            addFirstNode(curr);
+            curr = forw;
+        }
+
+        if (oh == nullptr)
+        {
+            oh = th;
+            ot = tt;
+        }
+        else
+        {
+            ot->next = th;
+            ot = tt;
+        }
+
+        th = tt = nullptr;
+        len -= k;
+    }
+
+    ot->next = curr;
+
+    return oh;
+}
+
+ListNode *multiplyDigitWithLL(ListNode *list, int digit)
+{
+    ListNode *dummy = new ListNode(-1), *prev = dummy, *c = list;
+    int carry = 0;
+    while (c != NULL || carry != 0)
+    {
+        int prod = carry + (c != NULL ? c->val : 0) * digit;
+        carry = prod / 10;
+        int num = prod % 10;
+
+        prev->next = new ListNode(num);
+        prev = prev->next;
+
+        if (c != NULL)
+            c = c->next;
+    }
+
+    return dummy->next;
+}
+
+void addTwoLL(ListNode *curr, ListNode *prev)
+{
+    int carry = 0;
+    while (curr != NULL || carry != 0)
+    {
+        int sum = carry + (curr != NULL ? curr->val : 0) + (prev->next != NULL ? prev->next->val : 0);
+        carry = sum / 10;
+
+        if (prev->next == NULL)
+            prev->next = new ListNode(0);
+        prev = prev->next;
+        prev->val = sum % 10;
+
+        if (curr != NULL)
+            curr = curr->next;
+    }
+}
+
+ListNode *multiplyTwoLL(ListNode *l1, ListNode *l2)
+{
+    l1 = reverse(l1);
+    l2 = reverse(l2);
+
+    ListNode *dummy = new ListNode(-1), *prev = dummy, *l2_itr = l2;
+
+    while (l2_itr != NULL)
+    {
+        ListNode *smallAnsList = multiplyDigitWithLL(l1, l2_itr->val);
+        addTwoLL(smallAnsList, prev);
+
+        prev = prev->next;
+        l2_itr = l2_itr->next;
+    }
+
+    return reverse(dummy->next);
+}
+
+// multiply k list
+ListNode *multiplyKList(vector<ListNode *> &list)
+{
 }
