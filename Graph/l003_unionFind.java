@@ -71,4 +71,14 @@ public class l003_unionFind {
         }
     }
 
+    // kruskalAlgo
+    public static void kruskalAlgo(int[][] edges, int N) {
+        // {{u,v,w}}
+        Arrays.sort(edges, (a, b) -> {
+            return a[2] - b[2];
+        });
+
+        unionFind(edges, N);
+    }
+
 }

@@ -225,6 +225,38 @@ public class dsuQuestions {
     }
 
 
+    // 1168
+    public int minCostToSupplyWater(int n, int[] wells, int[][] pipes) {
+        for (int i = 0; i < wells.length; i++){
+            pipes[0][i] = 0;
+            pipes[1][i] = i+1;
+            pipes[2][i] = wells[i];
+            // pipes.push_back({0, i + 1, wells[i]});
+        }
+
+        Arrays.sort(pipes, (a, b) -> {
+            return a[2] - b[2];
+        });
+
+        for (int i = 0; i <= n; i++)
+            par[i] = i;
+
+        int cost = 0;
+        for (int[] e : pipes)
+        {
+            int u = e[0], v = e[1], w = e[2];
+            int p1 = findPar(u), p2 = findPar(v);
+            if (p1 != p2)
+            {
+                par[p1] = p2;
+                cost += w;
+            }
+        }
+
+        return cost;
+    }
+
+
 
 
 
