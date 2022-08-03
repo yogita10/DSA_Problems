@@ -361,6 +361,58 @@ public class dsuQuestions {
         return cost;
     }
 
+    // 924
+    int[] population;
+    int[] par;
+
+    public int findPar(int u) {
+        return par[u] == u ? u : (par[u] = findPar(par[u]));
+    }
+
+    public int minMalwareSpread(int[][] graph, int[] initial) {
+        int n = graph.length;
+        par = new int[n];
+        population = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            par[i] = i;
+            population[i] = 1;
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (graph[i][j] == 0 || i == j)
+                    continue;
+
+                int p1 = findPar(i), p2 = findPar(j);
+                if (p1 != p2) {
+                    par[p1] = p2;
+                    population[p2] += population[p1];
+                }
+            }
+        }
+
+        int[] infectedCount = new int[n];
+        for (int ele : initial) {
+            int p = findPar(ele);
+            infectedCount[p]++;
+        }
+
+        Arrays.sort(initial);
+
+        int ans = initial[0];
+        int maxPopulation = 0;
+        for (int ele : initial) {
+            int p = findPar(ele);
+            if (infectedCount[p] == 1 && population[p] > maxPopulation) {
+                maxPopulation = population[p];
+                ans = ele;
+            }
+        }
+
+        return ans;
+    }
+
 
 
 
