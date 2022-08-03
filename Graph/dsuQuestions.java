@@ -37,7 +37,7 @@ public class dsuQuestions {
         if (par[u] == u)
             return u;
         else
-            return par[u] = findPar(par, par[u]);
+            return par[u] = findPar(par[u]);
     }
 
     public String smallestEquivalentString(String s1, String s2, String baseStr) {
@@ -258,7 +258,12 @@ public class dsuQuestions {
 
 
     // mr president - hackerearth
-    public int mrPresident() {
+    static int[] par;  
+    public static int findPar(int u) {
+        if(par[u] == u) return u; 
+        else return par[u] = findPar( par[u]);
+    }
+    public static int mrPresident() {
         Scanner scn = new Scanner(System.in);
         int N = scn.nextInt();
         int M = scn.nextInt();
@@ -309,6 +314,52 @@ public class dsuQuestions {
         return totalCost > K ? -1 : conversions;
     }
 
+    // 1584
+    int[] par;
+
+    public int findPar(int u) {
+        if (par[u] == u)
+            return u;
+        else
+            return par[u] = findPar(par[u]);
+    }
+    
+    private int distance(int[][] points, int i, int j) {
+        return Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+    }
+    
+    public int minCostConnectPoints(int[][] points) {
+
+        int n = points.length;
+        ArrayList<int[]> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                list.add(new int[] { distance(points, i, j), i, j });
+            }
+        }
+
+        Collections.sort(list, (a, b) -> {
+            return a[0] - b[0];
+        });
+
+        par = new int[n];
+        for (int i = 0; i < n; i++)
+            par[i] = i;
+
+        int cost = 0, NoOfEdges = 0;
+        for (int[] e : list) {
+            int u = e[1], v = e[2], w = e[0];
+            int p1 = findPar(u), p2 = findPar(v);
+
+            if (p1 != p2) {
+                par[p1] = p2;
+                cost += w;
+                NoOfEdges++;
+            }
+        }
+
+        return cost;
+    }
 
 
 
